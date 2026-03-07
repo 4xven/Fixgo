@@ -1,4 +1,4 @@
-package com.fixgo
+package com.marvo.fixgo
 
 import android.os.Build
 import android.os.Bundle

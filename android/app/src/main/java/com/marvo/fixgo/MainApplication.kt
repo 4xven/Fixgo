@@ -1,4 +1,4 @@
-package com.fixgo
+package com.marvo.fixgo
 
 import android.app.Application
 import android.content.res.Configuration

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "938962742816",
+    "project_id": "fixgo-8a79b",
+    "storage_bucket": "fixgo-8a79b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938962742816:android:553af0054a5c098613d645",
+        "android_client_info": {
+          "package_name": "com.marvo.fixgo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "938962742816-r9b9035b8ruc7id4oo8s8occcc8ocua8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.marvo.fixgo",
+            "certificate_hash": "da5f8831fd982f1a698a6e13a8b46550759d81f1"
+          }
+        },
+        {
+          "client_id": "938962742816-bbjr46u2gms61qe0m5i8nj9gmk1h4nq8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqkrayS-GwvbiWo7EhOkrajhhEXLWBwgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "938962742816-bbjr46u2gms61qe0m5i8nj9gmk1h4nq8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "938962742816-7hnvtmg41jefb3ft62aog22pikgdkbm2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.marvo.fixgo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

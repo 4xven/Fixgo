@@ -1,7 +1,17 @@
 {
   "expo": {
+    "scheme": "fixgo",
     "name": "fixgo",
     "slug": "fixgo",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    
+    "android": {
+      "package": "com.marvo.fixgo",
+      "googleServicesFile": "./google-services.json"
+    },
+    "ios": {
+      "bundleIdentifier": "com.marvo.fixgo",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    }
   }
 }
