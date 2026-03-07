@@ -38,7 +38,7 @@ function App() {
           name="ProviderRegistration"
           component={ProviderRegistration}
         />
-        <Stack.Screen name="Home" component={Home} /> {/* ✅ Must be inside navigator */}
+        <Stack.Screen name="Home" component={Home} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
