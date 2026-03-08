@@ -10,6 +10,7 @@ import CustomerRegistration from "./app/customer/auth/registration";
 import ProviderRegistration from "./app/provider/auth/registration";
 import Home from "./app/customer/home";
 import HomeProvider from "./app/provider/home_pro";
+import CustomerTabs from "./app/customer/customerTabs";
 
 export type RootStackParamList = {
   SplashScreen: { nextScreen?: keyof RootStackParamList };
@@ -19,6 +20,7 @@ export type RootStackParamList = {
   ProviderRegistration: undefined;
   Home: undefined;
   HomeProvider: undefined;
+  CustomerTabs: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -43,6 +45,7 @@ function App() {
         />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="HomeProvider" component={HomeProvider} />
+        <Stack.Screen name="CustomerTabs" component={CustomerTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

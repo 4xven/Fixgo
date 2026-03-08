@@ -71,7 +71,7 @@ const signIn = async () => {
 
     console.log("Logged in:", user.email);
 
-    navigation.replace("SplashScreen", { nextScreen: "Home" });
+    navigation.replace("SplashScreen", { nextScreen: "CustomerTabs" });
 
   } catch (error: any) {
 
