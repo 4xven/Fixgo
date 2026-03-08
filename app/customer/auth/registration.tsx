@@ -3,6 +3,11 @@ import { useState } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig";
 
 import {
   Text,
@@ -12,14 +17,23 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 
-export default function Registration() {
+export default function CustomerRegistration() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [userType, setUserType] = useState<"Customer" | "Provider">("Customer");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [fullNameError, setFullNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmError, setConfirmError] = useState("");
 
   type RegistrationScreenProp = NativeStackNavigationProp<
     RootStackParamList,
@@ -27,113 +41,251 @@ export default function Registration() {
   >;
   const navigation = useNavigation<RegistrationScreenProp>();
 
-  const signUp = () => {
-    // Add your registration logic here
-    console.log({ fullName, email, password, phone, userType });
-  };
+const register = async () => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  setFullNameError("");
+  setEmailError("");
+  setPasswordError("");
+  setConfirmError("");
+
+  if (!fullName) {
+    setFullNameError("Full name is required");
+    return;
+  }
+
+  if (!emailRegex.test(email)) {
+    setEmailError("Invalid email");
+    return;
+  }
+
+  if (password.length < 6) {
+    setPasswordError("Password must be 6 characters");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setConfirmError("Passwords do not match");
+    return;
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Save user info in Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      fullName,
+      email,
+      userType, // "Customer" or "Provider"
+      createdAt: new Date(),
+    });
+
+    setSuccessMessage("✅ Account created successfully!");
+
+    setTimeout(() => {
+      navigation.navigate("CustomerLogin");
+    }, 1500);
+
+  } catch (error:any) {
+    if (error.code === "auth/email-already-in-use") {
+      setEmailError("Email already registered");
+    } else {
+      alert(error.message);
+    }
+  }
+};
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Image
-          source={require("../../../assets/img/logo.png")}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <Image
+            source={require("../../../assets/img/logo.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
 
-      {/* Registration Card */}
-      <View style={styles.card}>
-        <Text style={styles.getStarted}>Registration</Text>
+        {/* Registration Card */}
+        <View style={styles.card}>
+          <Text style={styles.getStarted}>Registeration</Text>
 
-        {/* Customer / Provider Toggle */}
-        <View style={styles.toggleContainer}>
-          {/* Customer button */}
-          <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              userType === "Customer" && styles.activeToggle,
-            ]}
-            onPress={() => navigation.navigate("CustomerRegistration")}
-          >
-            <Text
+          {/* Customer / Provider Toggle */}
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity
               style={[
-                styles.toggleText,
-                userType === "Customer" && styles.activeToggleText,
+                styles.toggleButton,
+                userType === "Customer" && styles.activeToggle,
               ]}
+              onPress={() => setUserType("Customer")}
             >
-              Customer
-            </Text>
+              <Text
+                style={[
+                  styles.toggleText,
+                  userType === "Customer" && styles.activeToggleText,
+                ]}
+              >
+                Customer
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                userType === "Provider" && styles.activeToggle,
+              ]}
+              onPress={() => navigation.navigate("ProviderRegistration")}
+            >
+              <Text
+                style={[
+                  styles.toggleText,
+                  userType === "Provider" && styles.activeToggleText,
+                ]}
+              >
+                Provider
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Inputs */}
+          <KeyboardAvoidingView behavior="padding" style={{ width: "100%" }}>
+            {successMessage ? (
+              <Text style={styles.successText}>{successMessage}</Text>
+            ) : null}
+            {/* Full Name Input */}
+            <View style={styles.inputContainer}>
+              <MaterialIcons
+                name="person"
+                size={22}
+                color={fullNameError ? "red" : "#555"}
+                style={styles.leftIcon}
+              />
+              <TextInput
+                style={styles.inputWithIcon}
+                value={fullName}
+                onChangeText={(text) => {
+                  setFullName(text);
+                  setFullNameError("");
+                }}
+                autoCapitalize="words"
+                placeholder={fullNameError || "Full Name"}
+                placeholderTextColor={fullNameError ? "red" : "#888"}
+                maxLength={50}
+                autoComplete="off" // disable autofill
+                importantForAutofill="no" // Android specific
+              />
+            </View>
+
+            {/* Email Input */}
+            <View style={styles.inputContainer}>
+              <MaterialIcons
+                name="email"
+                size={22}
+                color={emailError ? "red" : "#555"}
+                style={styles.leftIcon}
+              />
+              <TextInput
+                style={styles.inputWithIcon}
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setEmailError("");
+                }}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                placeholder={emailError || "Email"}
+                placeholderTextColor={emailError ? "red" : "#888"}
+                maxLength={50}
+              />
+            </View>
+
+            {/* Password Input */}
+            <View style={styles.passwordContainer}>
+              <MaterialIcons
+                name="lock"
+                size={22}
+                color={passwordError ? "red" : "#555"}
+                style={styles.leftIcon}
+              />
+              <TextInput
+                style={styles.passwordInput}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setPasswordError("");
+                }}
+                placeholder={passwordError || "Password"}
+                placeholderTextColor={passwordError ? "red" : "#888"}
+                secureTextEntry={!showPassword}
+                autoComplete="off" // disable autofill
+                importantForAutofill="no" // Android specific
+              />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye" : "eye-off"}
+                  size={22}
+                  color="#555"
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* Confirm Password Input */}
+            <View style={styles.passwordContainer}>
+              <MaterialIcons
+                name="lock"
+                size={22}
+                color={confirmError ? "red" : "#555"}
+                style={styles.leftIcon}
+              />
+              <TextInput
+                style={styles.passwordInput}
+                value={confirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  setConfirmError("");
+                }}
+                placeholder={confirmError || "Confirm Password"}
+                placeholderTextColor={confirmError ? "red" : "#888"}
+                secureTextEntry={!showPassword}
+                autoComplete="off"
+                importantForAutofill="no"
+              />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye" : "eye-off"}
+                  size={22}
+                  color="#555"
+                />
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
+
+          {/* Register Button */}
+          <TouchableOpacity style={styles.loginButton} onPress={register}>
+            <Text style={styles.loginButtonText}>Register</Text>
           </TouchableOpacity>
 
-          {/* Provider button */}
           <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              userType === "Provider" && styles.activeToggle,
-            ]}
-            onPress={() => navigation.navigate("ProviderRegistration")}
+            onPress={() => navigation.navigate("CustomerLogin")}
           >
-            <Text
-              style={[
-                styles.toggleText,
-                userType === "Provider" && styles.activeToggleText,
-              ]}
-            >
-              Provider
+            <Text style={styles.signUpText}>
+              Already have an account? Log in
             </Text>
           </TouchableOpacity>
         </View>
-
-        {/* Inputs */}
-        <KeyboardAvoidingView behavior="padding" style={{ width: "100%" }}>
-          <TextInput
-            style={styles.input}
-            value={fullName}
-            onChangeText={setFullName}
-            placeholder="Full Name"
-            placeholderTextColor="#888"
-          />
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            placeholder="Email"
-            placeholderTextColor="#888"
-          />
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            secureTextEntry
-            placeholderTextColor="#888"
-          />
-          <TextInput
-            style={styles.input}
-            value={phone}
-            onChangeText={setPhone}
-            keyboardType="phone-pad"
-            placeholder="Phone Number"
-            placeholderTextColor="#888"
-          />
-        </KeyboardAvoidingView>
-
-        {/* Create Account Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate("CustomerLogin")}>
-          <Text style={styles.loginButtonText}>Create Account</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate("CustomerLogin")}>
-          <Text style={styles.signUpText}>
-            Already have an account? Sign In
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -162,11 +314,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     marginBottom: 40,
   },
-  subText: {
-    fontSize: 14,
-    color: "#9e8d95",
-    marginBottom: 25,
-  },
   toggleContainer: {
     flexDirection: "row",
     marginBottom: 20,
@@ -190,17 +337,51 @@ const styles = StyleSheet.create({
   activeToggleText: {
     color: "#fff",
   },
-  input: {
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#d8c6c6",
+    borderRadius: 25,
     marginVertical: 8,
+    paddingHorizontal: 15,
+    height: 50,
+    width: "100%",
+  },
+  leftIcon: {
+    marginRight: 10,
+  },
+  inputWithIcon: {
+    flex: 1,
+    fontSize: 16,
+    color: "#000",
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#d8c6c6",
+    borderRadius: 25,
+    marginVertical: 8,
+    paddingHorizontal: 15,
+    height: 50,
+    width: "100%",
+    position: "relative",
+  },
+  passwordInput: {
     height: 50,
     borderRadius: 25,
-    paddingHorizontal: 20,
     backgroundColor: "#d8c6c6",
     color: "#000",
     fontSize: 16,
+    paddingRight: 40,
+    flex: 1,
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 15,
+    top: 14,
   },
   loginButton: {
-    backgroundColor: "#000",
+    backgroundColor: "#4b465e",
     marginVertical: 15,
     paddingVertical: 15,
     borderRadius: 25,
@@ -221,9 +402,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-
   logo: {
     width: 450,
     height: 150,
+  },
+  successText: {
+    color: "green",
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 10,
   },
 });

@@ -9,15 +9,19 @@ export default function Home() {
   const navigation = useNavigation<HomeScreenProp>();
 
   const handleLogout = () => {
-    navigation.replace("CustomerLogin"); // Replace so user can't go back with back button
+    navigation.replace("CustomerLogin"); 
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>This is Home Page</Text>
+      <Text style={styles.text}>This is Home Page for Customer</Text>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("SplashScreen", { nextScreen: "CustomerLogin" })
+        }
+      >
+        <Text style={{ color: "#000000", fontSize: 16 }}>Logout</Text>
       </TouchableOpacity>
     </View>
   );
