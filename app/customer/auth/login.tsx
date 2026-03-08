@@ -5,7 +5,8 @@ import { RootStackParamList } from "../../../App";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../config/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../../config/firebaseConfig";
 
 import {
   Text,
@@ -62,16 +63,30 @@ const signIn = async () => {
   try {
 
     const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+  auth,
+  email,
+  password
+);
 
-    const user = userCredential.user;
+const user = userCredential.user;
 
-    console.log("Logged in:", user.email);
+// GET USER DATA FROM FIRESTORE
+const userDoc = await getDoc(doc(db, "users", user.uid));
 
-    navigation.replace("SplashScreen", { nextScreen: "CustomerTabs" });
+if (!userDoc.exists()) {
+  setLoginError("Account not found");
+  return;
+}
+
+const data = userDoc.data();
+
+// CHECK IF ACCOUNT IS CUSTOMER
+if (data.userType !== "Customer") {
+  setLoginError("This account is registered as a Provider");
+  return;
+}
+
+navigation.replace("SplashScreen", { nextScreen: "CustomerTabs" });
 
   } catch (error: any) {
 

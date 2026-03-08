@@ -13,7 +13,7 @@ import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { auth } from "../config/firebaseConfig";
+import { auth } from "../../config/firebaseConfig";
 
 export default function Home() {
   const [userName, setUserName] = useState("User");
@@ -70,16 +70,16 @@ export default function Home() {
         </View>
 
         {/* AI Card */}
-        <TouchableOpacity 
-  style={styles.aiCard}
-  onPress={() => navigation.navigate("AIChat")}
->
-  <Ionicons name="sparkles-outline" size={22} color="#fff" />
-  <View style={{ marginLeft: 10 }}>
-    <Text style={styles.aiTitle}>Ask FixGo AI</Text>
-    <Text style={styles.aiSubtitle}>Get instant help & diagnosis</Text>
-  </View>
-</TouchableOpacity>
+        <TouchableOpacity
+          style={styles.aiCard}
+          onPress={() => navigation.navigate("AIChat")}
+        >
+          <Ionicons name="sparkles-outline" size={22} color="#fff" />
+          <View style={{ marginLeft: 10 }}>
+            <Text style={styles.aiTitle}>Ask FixGo AI</Text>
+            <Text style={styles.aiSubtitle}>Get instant help & diagnosis</Text>
+          </View>
+        </TouchableOpacity>
 
         {/* Services */}
         <View style={styles.sectionHeader}>
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 15,
     alignItems: "center",
-       marginBottom: 15,
+    marginBottom: 15,
   },
 
   avatar: {

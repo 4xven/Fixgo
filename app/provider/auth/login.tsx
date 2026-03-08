@@ -4,7 +4,8 @@ import { RootStackParamList } from "../../../App";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../config/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../../config/firebaseConfig";
 
 import {
   Text,
@@ -64,15 +65,28 @@ export default function ProviderLogin() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+  auth,
+  email,
+  password
+);
 
-      const user = userCredential.user;
-      console.log("Provider Logged in:", user.email);
+const user = userCredential.user;
 
-      navigation.replace("SplashScreen", { nextScreen: "HomeProvider" });
+const userDoc = await getDoc(doc(db, "users", user.uid));
+
+if (!userDoc.exists()) {
+  setLoginError("Account not found");
+  return;
+}
+
+const data = userDoc.data();
+
+if (data.userType !== "Provider") {
+  setLoginError("This account is registered as a Customer");
+  return;
+}
+
+navigation.replace("SplashScreen", { nextScreen: "HomeProvider" });
 
     } catch (error: any) {
       if (

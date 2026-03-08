@@ -8,7 +8,7 @@ import CustomerLogin from "./app/customer/auth/login";
 import ProviderLogin from "./app/provider/auth/login";
 import CustomerRegistration from "./app/customer/auth/registration";
 import ProviderRegistration from "./app/provider/auth/registration";
-import Home from "./app/customer/home";
+import Home from "./app/customer/navbar/home";
 import HomeProvider from "./app/provider/home_pro";
 import CustomerTabs from "./app/customer/customerTabs";
 

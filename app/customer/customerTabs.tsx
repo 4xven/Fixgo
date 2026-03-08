@@ -2,10 +2,10 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
-import Home from "../../app/customer/home"
-import Book from "../../app/customer/book";
-import AIChat from "../../app/customer/aichat";
-import Profile from "../../app/customer/profile";
+import Home from "./navbar/home";
+import Book from "./navbar/book";
+import AIChat from "./navbar/aichat";
+import Profile from "./navbar/profile";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +34,11 @@ export default function CustomerTabs() {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Book" component={Book} />
-      <Tab.Screen name="AIChat" component={AIChat} options={{ title: "AI Chat" }} />
+      <Tab.Screen
+        name="AIChat"
+        component={AIChat}
+        options={{ title: "AI Chat" }}
+      />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
