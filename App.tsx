@@ -33,8 +33,14 @@ function App() {
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="CustomerLogin" component={CustomerLogin} />
         <Stack.Screen name="ProviderLogin" component={ProviderLogin} />
-        <Stack.Screen name="CustomerRegistration" component={CustomerRegistration} />
-        <Stack.Screen name="ProviderRegistration" component={ProviderRegistration} />
+        <Stack.Screen
+          name="CustomerRegistration"
+          component={CustomerRegistration}
+        />
+        <Stack.Screen
+          name="ProviderRegistration"
+          component={ProviderRegistration}
+        />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="HomeProvider" component={HomeProvider} />
       </Stack.Navigator>
