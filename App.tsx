@@ -11,16 +11,38 @@ import ProviderRegistration from "./app/provider/auth/registration";
 import Home from "./app/customer/navbar/home";
 import HomeProvider from "./app/provider/home_pro";
 import CustomerTabs from "./app/customer/customerTabs";
+import BookingScreen from "./app/customer/navbar/booking/bookingScreen";
+import BookingExpertScreen from "./app/customer/navbar/booking/bookingExpertScreen";
+import HelpSupport from "./app/customer/navbar/support/help";
+import PrivacyPolicy from "./app/customer/navbar/support/privacy";
+import TermsOfService from "./app/customer/navbar/support/terms";
+import AboutFixGo from "./app/customer/navbar/support/about";
+import PersonalInformation from "./app/customer/navbar/support/information";
+
+
+
 
 export type RootStackParamList = {
-  SplashScreen: { nextScreen?: keyof RootStackParamList };
+  SplashScreen: { 
+    nextScreen?: keyof RootStackParamList;
+    serviceType?: string;
+    expert?: any;
+   };
   CustomerLogin: undefined;
   ProviderLogin: undefined;
   CustomerRegistration: undefined;
   ProviderRegistration: undefined;
   Home: undefined;
   HomeProvider: undefined;
-  CustomerTabs: undefined;
+  CustomerTabs: { screen?: "Home" | "Book" | "AIChat" | "Profile" };
+   BookingScreen: { serviceType?: string };
+     BookingExpertScreen: { expert: any };
+
+    HelpSupport: undefined;
+    PrivacyPolicy: undefined;
+    AboutFixGo: undefined;
+    TermsOfService: undefined;
+    PersonalInformation: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,6 +68,13 @@ function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="HomeProvider" component={HomeProvider} />
         <Stack.Screen name="CustomerTabs" component={CustomerTabs} />
+        <Stack.Screen name="BookingScreen" component={BookingScreen} />
+        <Stack.Screen name="BookingExpertScreen" component={BookingExpertScreen} />
+        <Stack.Screen name="HelpSupport" component={HelpSupport} />
+        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+        <Stack.Screen name="TermsOfService" component={TermsOfService} />
+        <Stack.Screen name="AboutFixGo" component={AboutFixGo} />
+        <Stack.Screen name="PersonalInformation" component={PersonalInformation} />
       </Stack.Navigator>
     </NavigationContainer>
   );

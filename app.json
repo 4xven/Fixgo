@@ -4,14 +4,32 @@
     "name": "fixgo",
     "slug": "fixgo",
     "version": "1.0.0",
-    
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "android": {
       "package": "com.marvo.fixgo",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "permissions": ["INTERNET"]
     },
     "ios": {
       "bundleIdentifier": "com.marvo.fixgo",
       "googleServicesFile": "./GoogleService-Info.plist"
-    }
+    },
+    "plugins": [
+      "@react-native-community/datetimepicker"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ac0ad09b-fbc1-4eff-89b0-77a138e0fc0d"
+      }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/ac0ad09b-fbc1-4eff-89b0-77a138e0fc0d",
+      "fallbackToCacheTimeout": 0
+    },
+    "owner": "azval"
   }
 }
